@@ -8,12 +8,12 @@ exports.seed = async function (knex) {
   await knex("users").insert([
     {
       id: 1,
-      user_name: "Alex Ross",
-      first_name: "Alex",
+      user_name: "Maddie Ross",
+      first_name: "Maddie",
       last_name: "Ross",
-      email: "awhr95@gmail.com",
+      email: "maddie@gmail.com",
       password: "1234",
-      bio: "I am Alex and I live in Clapham. I would love to offer up my time to support a good cause!",
+      bio: "I am Maddie and I live in Islington. I would love to offer up my time to support a good cause!",
       current_number_of_opportunities: 2,
       total_opportunities: 6,
     },
