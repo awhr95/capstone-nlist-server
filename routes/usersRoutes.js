@@ -2,29 +2,30 @@ const express = require("express");
 const router = express.Router();
 const knex = require("knex")(require("../knexfile"));
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const { getAllUsers } = require("../controllers/usersControllers");
 
 router.route("/").get(getAllUsers);
 
 router.post("/register", async (req, res) => {
-  const { user_name, email, bio, password, first_name, last_name } = req.body;
+  const { email, password } = req.body;
 
-  if (!user_name || !first_name || !last_name || !email || !password || !bio) {
+  if (!email || !password) {
     return res.status(400).send("Please enter the required fields.");
   }
 
   const hashedPassword = bcrypt.hashSync(password, 6);
 
   const newUser = {
-    user_name,
+    user_name: "",
     email,
-    bio,
+    bio: "",
     current_number_of_opportunities: 0,
     total_opportunities: 0,
     password: hashedPassword,
-    first_name,
-    last_name,
+    first_name: "",
+    last_name: "",
   };
 
   try {
