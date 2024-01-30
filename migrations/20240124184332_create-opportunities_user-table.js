@@ -4,6 +4,7 @@
  */
 exports.up = function (knex) {
   return knex.schema.createTable("opportunities_users", (table) => {
+    table.increments("id").primary();
     table
       .integer("user_id")
       .unsigned()
@@ -23,4 +24,6 @@ exports.up = function (knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = function (knex) {};
+exports.down = function (knex) {
+  return knex.schema.dropTable("opportunities_users");
+};
