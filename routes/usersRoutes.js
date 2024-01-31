@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const knex = require("knex")(require("../knexfile"));
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 
 const {
   getAllUsers,

@@ -1,4 +1,6 @@
 require("dotenv").config();
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const knex = require("knex")(require("../knexfile"));
 
@@ -79,7 +81,7 @@ const loginUser = async (req, res) => {
       }
     );
 
-    return res.json({ token });
+    return res.json({ token, id: user.id });
   } catch (error) {
     console.log(error);
     return res.status(400).json({ message: "Failed login" });

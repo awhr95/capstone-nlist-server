@@ -29,7 +29,9 @@ const getAllOpportunities = async (_req, res) => {
 
 const getOneOpportunity = async (req, res) => {
   try {
-    const result = await knex("opportunities").where({ id: req.params.id });
+    const result = await knex("opportunities").where({
+      id: req.params.opportunitiesId,
+    });
 
     const mappedOpportunity = await Promise.all(
       result.map(async (opportunity) => {
@@ -57,6 +59,30 @@ const getOneOpportunity = async (req, res) => {
   }
 };
 
-const userOppSignUp = async (req, res) => {};
+const userOppSignUp = async (req, res) => {
+  //get user id from session storage
+  try {
+    const { opportunitiesId: opportunities_id } = req.params;
+    const { user_id } = req.body;
+    // const user_id = sessionStorage.getItem("user_id");
+
+    console.log(opportunities_id);
+
+    const newRecord = {
+      user_id,
+      opportunities_id,
+    };
+    const opportunitiesUsers = await knex("opportunities_users").insert(
+      newRecord
+    );
+    console.log(opportunitiesUsers);
+    const response = await knex("opportunities_users")
+      .where({ id: opportunitiesUsers[0] })
+      .first();
+    return res.status(201).json(response);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
 module.exports = { getAllOpportunities, getOneOpportunity, userOppSignUp };
