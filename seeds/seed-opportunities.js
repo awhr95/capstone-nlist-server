@@ -15,6 +15,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "14:00:00",
       end_time_of_opportunity: "17:00:00",
       number_of_volunteers_needed: 8,
+      user_id: 1,
     },
     {
       id: 2,
@@ -25,6 +26,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "09:00:00",
       end_time_of_opportunity: "11:00:00",
       number_of_volunteers_needed: 5,
+      user_id: 1,
     },
     {
       id: 3,
@@ -35,6 +37,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "10:30:00",
       end_time_of_opportunity: "13:30:00",
       number_of_volunteers_needed: 10,
+      user_id: 1,
     },
     {
       id: 4,
@@ -45,6 +48,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "14:00:00",
       end_time_of_opportunity: "16:00:00",
       number_of_volunteers_needed: 15,
+      user_id: 1,
     },
     {
       id: 5,
@@ -55,6 +59,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "11:00:00",
       end_time_of_opportunity: "14:00:00",
       number_of_volunteers_needed: 3,
+      user_id: 1,
     },
     {
       id: 6,
@@ -65,6 +70,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "09:30:00",
       end_time_of_opportunity: "12:30:00",
       number_of_volunteers_needed: 20,
+      user_id: 1,
     },
     {
       id: 7,
@@ -75,6 +81,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "13:00:00",
       end_time_of_opportunity: "15:00:00",
       number_of_volunteers_needed: 8,
+      user_id: 1,
     },
     {
       id: 8,
@@ -85,6 +92,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "08:00:00",
       end_time_of_opportunity: "14:00:00",
       number_of_volunteers_needed: 30,
+      user_id: 1,
     },
     {
       id: 9,
@@ -95,6 +103,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "18:00:00",
       end_time_of_opportunity: "21:00:00",
       number_of_volunteers_needed: 12,
+      user_id: 1,
     },
     {
       id: 10,
@@ -105,6 +114,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "16:30:00",
       end_time_of_opportunity: "18:30:00",
       number_of_volunteers_needed: 6,
+      user_id: 1,
     },
     {
       id: 11,
@@ -115,6 +125,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "11:00:00",
       end_time_of_opportunity: "15:00:00",
       number_of_volunteers_needed: 8,
+      user_id: 1,
     },
     {
       id: 12,
@@ -125,6 +136,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "10:00:00",
       end_time_of_opportunity: "12:00:00",
       number_of_volunteers_needed: 5,
+      user_id: 1,
     },
     {
       id: 13,
@@ -135,6 +147,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "14:30:00",
       end_time_of_opportunity: "17:30:00",
       number_of_volunteers_needed: 10,
+      user_id: 1,
     },
     {
       id: 14,
@@ -145,6 +158,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "07:00:00",
       end_time_of_opportunity: "12:00:00",
       number_of_volunteers_needed: 25,
+      user_id: 1,
     },
     {
       id: 15,
@@ -155,6 +169,7 @@ exports.seed = async function (knex) {
       start_time_of_opportunity: "12:00:00",
       end_time_of_opportunity: "15:00:00",
       number_of_volunteers_needed: 8,
+      user_id: 1,
     },
   ]);
 };

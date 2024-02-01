@@ -11,6 +11,12 @@ exports.up = function (knex) {
     table.time("start_time_of_opportunity").notNullable();
     table.time("end_time_of_opportunity").notNullable();
     table.bigint("number_of_volunteers_needed").notNullable();
+    table
+      .integer("user_id")
+      .unsigned()
+      .references("users.id")
+      .onUpdate("CASCADE")
+      .onDelete("CASCADE");
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table
       .timestamp("updated_at")
