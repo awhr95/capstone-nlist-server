@@ -126,4 +126,34 @@ const updateAccountDetails = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers, registerUser, loginUser, updateAccountDetails };
+const getUserOpps = async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const userOpportunities = await knex("users")
+      .select("users.id as user_id", "opportunities.*")
+      .join(
+        "opportunities_users",
+        "users.id",
+        "=",
+        "opportunities_users.user_id"
+      )
+      .join(
+        "opportunities",
+        "opportunities.id",
+        "=",
+        "opportunities_users.opportunities_id"
+      )
+      .where("users.id", userId);
+    return res.status(200).json(userOpportunities);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+module.exports = {
+  getAllUsers,
+  registerUser,
+  loginUser,
+  updateAccountDetails,
+  getUserOpps,
+};
