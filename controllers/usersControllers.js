@@ -59,6 +59,7 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  console.log(req.body);
 
   if (!email || !password) {
     return res.status(400).send("Please enter the required fields");
@@ -88,4 +89,41 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers, registerUser, loginUser };
+const updateAccountDetails = async (req, res) => {
+  const updateFields = {
+    user_name: req.body.user_name,
+    email: req.body.email,
+    bio: req.body.bio,
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
+  };
+  try {
+    if (
+      !updateFields.email ||
+      !updateFields.user_name ||
+      !updateFields.bio ||
+      !updateFields.first_name ||
+      !updateFields.last_name
+    ) {
+      return res.status(400).send("Please fill all fields");
+    }
+    const checkUser = await knex("users").where({ id: req.params.userId });
+    console.log(checkUser[0].id);
+
+    if (checkUser.length === 0) {
+      return res.status(404).send("User not found");
+    }
+
+    await knex("users").where({ id: req.params.userId }).update(updateFields);
+
+    const updatedUser = await knex("users")
+      .where({ id: checkUser[0].id })
+      .first();
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+module.exports = { getAllUsers, registerUser, loginUser, updateAccountDetails };

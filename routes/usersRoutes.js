@@ -6,6 +6,7 @@ const {
   getAllUsers,
   registerUser,
   loginUser,
+  updateAccountDetails,
 } = require("../controllers/usersControllers");
 
 router.route("/").get(getAllUsers);
@@ -13,5 +14,7 @@ router.route("/").get(getAllUsers);
 router.route("/register").post(registerUser);
 
 router.route("/login").post(loginUser);
+
+router.route("/account/:userId").put(updateAccountDetails);
 
 module.exports = router;

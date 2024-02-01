@@ -85,4 +85,83 @@ const userOppSignUp = async (req, res) => {
   }
 };
 
-module.exports = { getAllOpportunities, getOneOpportunity, userOppSignUp };
+const createOpp = async (req, res) => {
+  const newOpp = ({
+    title,
+    description,
+    date_of_opportunity,
+    start_time_of_opportunity,
+    end_time_of_opportunity,
+    number_of_volunteers_needed,
+  } = req.body);
+  try {
+    if (
+      !newOpp.title ||
+      !newOpp.description ||
+      !newOpp.date_of_opportunity ||
+      !newOpp.start_time_of_opportunity ||
+      !newOpp.end_time_of_opportunity ||
+      !newOpp.number_of_volunteers_needed
+    ) {
+      return res.status(400).send("Incomplete form. Please fill all fields");
+    }
+
+    const opportunities = await knex("opportunities").insert(newOpp);
+    const response = await knex("opportunities")
+      .select("*")
+      .where({ id: opportunities[0] })
+      .first();
+    return res.status(201).json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const editOpp = async (req, res) => {
+  const updateFields = {
+    title: req.body.title,
+    description: req.body.description,
+    date_of_opportunity: req.body.date_of_opportunity,
+    start_time_of_opportunity: req.body.start_time_of_opportunity,
+    end_time_of_opportunity: req.body.end_time_of_opportunity,
+    number_of_volunteers_needed: req.body.number_of_volunteers_needed,
+  };
+  try {
+    if (
+      !updateFields.title ||
+      !updateFields.description ||
+      !updateFields.date_of_opportunity ||
+      !updateFields.start_time_of_opportunity ||
+      !updateFields.end_time_of_opportunity ||
+      !updateFields.number_of_volunteers_needed
+    ) {
+      return res.status(400).send("No fields to update");
+    }
+
+    const checkExistingOpp = await knex("opportunities").where({
+      id: req.params.opportunitiesId,
+    });
+
+    if (checkExistingOpp.length === 0) {
+      return res.status(404).send("Opportunity not found");
+    }
+
+    await knex("opportunities")
+      .where({ id: req.params.opportunitiesId })
+      .update(updateFields);
+    const updatedOpp = await knex("opportunities")
+      .where({ id: checkExistingOpp[0].id })
+      .first();
+    return res.status(200).json(updatedOpp);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+module.exports = {
+  getAllOpportunities,
+  getOneOpportunity,
+  userOppSignUp,
+  createOpp,
+  editOpp,
+};
