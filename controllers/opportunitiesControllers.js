@@ -158,10 +158,26 @@ const editOpp = async (req, res) => {
   }
 };
 
+const deleteOpp = async (req, res) => {
+  try {
+    if (!req.params.opportunitiesId) {
+      return res.status(404).send("No opportunity selected");
+    }
+    const opportunityRecord = await knex("opportunities")
+      .where({ id: req.params.opportunitiesId })
+      .del();
+    if (opportunityRecord === 0) {
+      return res.status(404).send("Opportunity could not be found");
+    }
+    return res.status(204).send("Item deleted");
+  } catch (error) {}
+};
+
 module.exports = {
   getAllOpportunities,
   getOneOpportunity,
   userOppSignUp,
   createOpp,
   editOpp,
+  deleteOpp,
 };

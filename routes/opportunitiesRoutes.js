@@ -8,6 +8,7 @@ const {
   userOppSignUp,
   createOpp,
   editOpp,
+  deleteOpp,
 } = require("../controllers/opportunitiesControllers");
 
 router.route("/").get(getAllOpportunities);
@@ -18,6 +19,8 @@ router.route("/signup/:opportunitiesId").post(userOppSignUp);
 
 router.route("/create-opportunity").post(createOpp);
 
-router.route("/edit-opp/:opportunitiesId").put(editOpp);
+router.route("/edit-opportunity/:opportunitiesId").put(editOpp);
+
+router.route("/delete-opportunity/:opportunitiesId").delete(deleteOpp);
 
 module.exports = router;
