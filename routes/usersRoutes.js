@@ -8,9 +8,12 @@ const {
   loginUser,
   updateAccountDetails,
   getUserOpps,
+  getOneUser,
 } = require("../controllers/usersControllers");
 
 router.route("/").get(getAllUsers);
+
+router.route("/:userId").get(getOneUser);
 
 router.route("/register").post(registerUser);
 

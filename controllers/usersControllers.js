@@ -28,6 +28,32 @@ const getAllUsers = async (_req, res) => {
   }
 };
 
+const getOneUser = async (req, res) => {
+  try {
+    const result = await knex("users").where({
+      id: req.params.userId,
+    });
+
+    const mappedUser = await Promise.all(
+      result.map(async (user) => {
+        const opportunities = await knex("opportunities_users")
+          .join(
+            "opportunities",
+            "opportunities_users.opportunities_id",
+            "=",
+            "opportunities.id"
+          )
+          .where("opportunities_users.user_id", user.id)
+          .select("opportunities.*");
+        return { ...user, opportunities };
+      })
+    );
+    return res.status(200).json(mappedUser[0]);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 const registerUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -156,4 +182,5 @@ module.exports = {
   loginUser,
   updateAccountDetails,
   getUserOpps,
+  getOneUser,
 };

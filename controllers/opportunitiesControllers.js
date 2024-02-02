@@ -87,6 +87,7 @@ const userOppSignUp = async (req, res) => {
 
 const createOpp = async (req, res) => {
   const newOpp = ({
+    user_id,
     title,
     description,
     date_of_opportunity,
