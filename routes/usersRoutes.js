@@ -4,16 +4,19 @@ const knex = require("knex")(require("../knexfile"));
 
 const {
   getAllUsers,
+  getOneUser,
+  getUserSavedOpps,
   registerUser,
   loginUser,
   updateAccountDetails,
   getUserOpps,
-  getOneUser,
 } = require("../controllers/usersControllers");
 
 router.route("/").get(getAllUsers);
 
 router.route("/:userId").get(getOneUser);
+
+router.route("/saved/:userId").get(getUserSavedOpps);
 
 router.route("/register").post(registerUser);
 

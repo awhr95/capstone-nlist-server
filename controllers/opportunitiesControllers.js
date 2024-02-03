@@ -27,6 +27,31 @@ const getAllOpportunities = async (_req, res) => {
   }
 };
 
+const getAllSavedOpportunities = async (req, res) => {
+  try {
+    const result = await knex("opportunities").select("*");
+
+    const mappedOpportunities = await Promise.all(
+      result.map(async (opportunity) => {
+        const users = await knex("saved_opportunities_users")
+          .join("users", "saved_opportunities_users.user_id", "=", "users.id")
+          .where("saved_opportunities_users.opportunities_id", opportunity.id)
+          .select("users.*");
+        const cleanUsers = users.map((user) => {
+          delete user.password;
+
+          return user;
+        });
+        return { ...opportunity, cleanUsers };
+      })
+    );
+
+    return res.status(200).json(mappedOpportunities);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 const getOneOpportunity = async (req, res) => {
   try {
     const result = await knex("opportunities").where({
@@ -77,6 +102,29 @@ const userOppSignUp = async (req, res) => {
     );
     console.log(opportunitiesUsers);
     const response = await knex("opportunities_users")
+      .where({ id: opportunitiesUsers[0] })
+      .first();
+    return res.status(201).json(response);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const userOppSave = async (req, res) => {
+  try {
+    const { opportunitiesId: opportunities_id } = req.params;
+    const { user_id } = req.body;
+    // const user_id = sessionStorage.getItem("user_id");
+
+    const newRecord = {
+      user_id,
+      opportunities_id,
+    };
+    const opportunitiesUsers = await knex("saved_opportunities_users").insert(
+      newRecord
+    );
+    console.log(opportunitiesUsers);
+    const response = await knex("saved_opportunities_users")
       .where({ id: opportunitiesUsers[0] })
       .first();
     return res.status(201).json(response);
@@ -176,8 +224,10 @@ const deleteOpp = async (req, res) => {
 
 module.exports = {
   getAllOpportunities,
+  getAllSavedOpportunities,
   getOneOpportunity,
   userOppSignUp,
+  userOppSave,
   createOpp,
   editOpp,
   deleteOpp,

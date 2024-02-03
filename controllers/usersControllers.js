@@ -54,6 +54,32 @@ const getOneUser = async (req, res) => {
   }
 };
 
+const getUserSavedOpps = async (req, res) => {
+  try {
+    const result = await knex("users").where({
+      id: req.params.userId,
+    });
+
+    const mappedUser = await Promise.all(
+      result.map(async (user) => {
+        const savedOpportunities = await knex("saved_opportunities_users")
+          .join(
+            "opportunities",
+            "saved_opportunities_users.opportunities_id",
+            "=",
+            "opportunities.id"
+          )
+          .where("saved_opportunities_users.user_id", user.id)
+          .select("opportunities.*");
+        return { ...user, savedOpportunities };
+      })
+    );
+    return res.status(200).json(mappedUser[0]);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 const registerUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -178,9 +204,10 @@ const getUserOpps = async (req, res) => {
 
 module.exports = {
   getAllUsers,
+  getOneUser,
+  getUserSavedOpps,
   registerUser,
   loginUser,
   updateAccountDetails,
   getUserOpps,
-  getOneUser,
 };
