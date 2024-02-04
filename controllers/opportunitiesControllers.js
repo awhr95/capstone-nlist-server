@@ -138,6 +138,7 @@ const createOpp = async (req, res) => {
     user_id,
     title,
     description,
+    type,
     date_of_opportunity,
     start_time_of_opportunity,
     end_time_of_opportunity,
@@ -147,6 +148,7 @@ const createOpp = async (req, res) => {
     if (
       !newOpp.title ||
       !newOpp.description ||
+      !newOpp.type ||
       !newOpp.date_of_opportunity ||
       !newOpp.start_time_of_opportunity ||
       !newOpp.end_time_of_opportunity ||
@@ -170,6 +172,7 @@ const editOpp = async (req, res) => {
   const updateFields = {
     title: req.body.title,
     description: req.body.description,
+    type: req.body.type,
     date_of_opportunity: req.body.date_of_opportunity,
     start_time_of_opportunity: req.body.start_time_of_opportunity,
     end_time_of_opportunity: req.body.end_time_of_opportunity,
@@ -179,6 +182,7 @@ const editOpp = async (req, res) => {
     if (
       !updateFields.title ||
       !updateFields.description ||
+      !updateFields.type ||
       !updateFields.date_of_opportunity ||
       !updateFields.start_time_of_opportunity ||
       !updateFields.end_time_of_opportunity ||
