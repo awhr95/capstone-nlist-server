@@ -29,11 +29,18 @@ const getAllUsers = async (_req, res) => {
 };
 
 const getOneUser = async (req, res) => {
-  try {
-    const result = await knex("users").where({
-      id: req.params.userId,
-    });
+  if (!req.headers.authorization) {
+    return res.status(401).send("Please login");
+  }
 
+  const authHeader = req.headers.authorization;
+  const authToken = authHeader.split(" ")[1];
+  try {
+    const decoded = jwt.verify(authToken, process.env.JWT_SECRET);
+
+    const result = await knex("users").where({
+      id: decoded.id,
+    });
     const mappedUser = await Promise.all(
       result.map(async (user) => {
         const opportunities = await knex("opportunities_users")
@@ -55,9 +62,16 @@ const getOneUser = async (req, res) => {
 };
 
 const getUserSavedOpps = async (req, res) => {
+  if (!req.headers.authorization) {
+    return res.status(401).send("Please login");
+  }
+
+  const authHeader = req.headers.authorization;
+  const authToken = authHeader.split(" ")[1];
   try {
+    const decoded = jwt.verify(authToken, process.env.JWT_SECRET);
     const result = await knex("users").where({
-      id: req.params.userId,
+      id: decoded.id,
     });
 
     const mappedUser = await Promise.all(
@@ -111,7 +125,6 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
 
   if (!email || !password) {
     return res.status(400).send("Please enter the required fields");
@@ -142,6 +155,13 @@ const loginUser = async (req, res) => {
 };
 
 const updateAccountDetails = async (req, res) => {
+  if (!req.headers.authorization) {
+    return res.status(401).send("Please login");
+  }
+
+  const authHeader = req.headers.authorization;
+  const authToken = authHeader.split(" ")[1];
+
   const updateFields = {
     user_name: req.body.user_name,
     email: req.body.email,
@@ -159,14 +179,15 @@ const updateAccountDetails = async (req, res) => {
     ) {
       return res.status(400).send("Please fill all fields");
     }
-    const checkUser = await knex("users").where({ id: req.params.userId });
-    console.log(checkUser[0].id);
+    const decoded = jwt.verify(authToken, process.env.JWT_SECRET);
+
+    const checkUser = await knex("users").where({ id: decoded.id });
 
     if (checkUser.length === 0) {
       return res.status(404).send("User not found");
     }
 
-    await knex("users").where({ id: req.params.userId }).update(updateFields);
+    await knex("users").where({ id: decoded.id }).update(updateFields);
 
     const updatedUser = await knex("users")
       .where({ id: checkUser[0].id })
@@ -179,8 +200,15 @@ const updateAccountDetails = async (req, res) => {
 };
 
 const getUserOpps = async (req, res) => {
-  const userId = req.params.userId;
+  if (!req.headers.authorization) {
+    return res.status(401).send("Please login");
+  }
+
+  const authHeader = req.headers.authorization;
+  const authToken = authHeader.split(" ")[1];
   try {
+    const decoded = jwt.verify(authToken, process.env.JWT_SECRET);
+
     const userOpportunities = await knex("users")
       .select("users.id as user_id", "opportunities.*")
       .join(
@@ -195,7 +223,7 @@ const getUserOpps = async (req, res) => {
         "=",
         "opportunities_users.opportunities_id"
       )
-      .where("users.id", userId);
+      .where("users.id", { id: decoded.id });
     return res.status(200).json(userOpportunities);
   } catch (error) {
     return res.status(400).json({ error: error.message });

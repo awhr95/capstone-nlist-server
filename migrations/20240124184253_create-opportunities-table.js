@@ -8,6 +8,9 @@ exports.up = function (knex) {
     table.string("title").notNullable();
     table.string("description").notNullable();
     table.string("type").notNullable();
+    table.string("address").notNullable();
+    table.string("latitude").notNullable();
+    table.string("longitude").notNullable();
     table.date("date_of_opportunity").notNullable();
     table.time("start_time_of_opportunity").notNullable();
     table.time("end_time_of_opportunity").notNullable();

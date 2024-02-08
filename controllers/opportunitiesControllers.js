@@ -1,4 +1,6 @@
 require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const axios = require("axios");
 
 const knex = require("knex")(require("../knexfile"));
 
@@ -111,15 +113,14 @@ const userOppSignUp = async (req, res) => {
 };
 
 const userOppSave = async (req, res) => {
+  console.log(req.params.body);
   try {
-    const { opportunitiesId: opportunities_id } = req.params;
     const { user_id } = req.body;
-    // const user_id = sessionStorage.getItem("user_id");
-
     const newRecord = {
-      user_id,
-      opportunities_id,
+      user_id: user_id,
+      opportunities_id: req.params.opportunitiesId,
     };
+    console.log(newRecord);
     const opportunitiesUsers = await knex("saved_opportunities_users").insert(
       newRecord
     );
@@ -134,27 +135,53 @@ const userOppSave = async (req, res) => {
 };
 
 const createOpp = async (req, res) => {
-  const newOpp = ({
-    user_id,
-    title,
-    description,
-    type,
-    date_of_opportunity,
-    start_time_of_opportunity,
-    end_time_of_opportunity,
-    number_of_volunteers_needed,
-  } = req.body);
+  const geoForwardUrl = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
+  const accessToken = process.env.MAPBOX_ACCESS_TOKEN;
+  const geocodeAddress = async (address) => {
+    try {
+      const response = await axios.get(
+        `${geoForwardUrl}${encodeURIComponent(
+          req.body.address
+        )}.json?access_token=${accessToken}`
+      );
+      const coordinates = response.data.features[0].geometry.coordinates;
+      console.log(`${req.body.address}: ${coordinates[1]}, ${coordinates[0]}`);
+      return coordinates;
+    } catch (error) {
+      console.error(`Error geocoding ${address}: ${error.message}`);
+    }
+  };
+  const coordinates = await geocodeAddress();
+  console.log(`coordinates ${coordinates}`);
+
+  const newOpp = {
+    user_id: req.body.user_id,
+    title: req.body.title,
+    address: req.body.address,
+    description: req.body.description,
+    latitude: coordinates[1],
+    longitude: coordinates[0],
+    type: req.body.type,
+    date_of_opportunity: req.body.date_of_opportunity,
+    start_time_of_opportunity: req.body.start_time_of_opportunity,
+    end_time_of_opportunity: req.body.end_time_of_opportunity,
+    number_of_volunteers_needed: req.body.number_of_volunteers_needed,
+  };
+
   try {
     if (
       !newOpp.title ||
       !newOpp.description ||
+      !newOpp.address ||
+      !newOpp.longitude ||
+      !newOpp.latitude ||
       !newOpp.type ||
       !newOpp.date_of_opportunity ||
       !newOpp.start_time_of_opportunity ||
       !newOpp.end_time_of_opportunity ||
       !newOpp.number_of_volunteers_needed
     ) {
-      return res.status(400).send("Incomplete form. Please fill all fields");
+      return res.status(401).send("Incomplete form. Please fill all fields");
     }
 
     const opportunities = await knex("opportunities").insert(newOpp);
@@ -225,6 +252,8 @@ const deleteOpp = async (req, res) => {
     return res.status(204).send("Item deleted");
   } catch (error) {}
 };
+
+const geoData = async (req, res) => {};
 
 module.exports = {
   getAllOpportunities,
